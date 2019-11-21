@@ -9,6 +9,8 @@ import android.widget.TextView
 import java.text.SimpleDateFormat
 import java.util.*
 
+// 表示部分
+
 class TaskAdapter(context: Context): BaseAdapter() {
     private val mLayoutInflater: LayoutInflater
     var taskList = mutableListOf<Task>()
@@ -36,6 +38,9 @@ class TaskAdapter(context: Context): BaseAdapter() {
         val textView2 = view.findViewById<TextView>(android.R.id.text2)
 
         textView1.text = taskList[position].title
+
+        // ここにカテゴリを追加
+//        textView1.text = taskList[position].categories
 
         val simpleDateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.JAPANESE)
         val date = taskList[position].date

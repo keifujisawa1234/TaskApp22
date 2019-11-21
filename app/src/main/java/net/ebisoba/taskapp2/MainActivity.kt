@@ -10,6 +10,9 @@ import android.content.Intent
 import android.support.v7.app.AlertDialog
 import android.app.AlarmManager
 import android.app.PendingIntent
+import android.view.LayoutInflater
+import kotlinx.android.synthetic.main.content_input.*
+import android.util.Log
 
 const val EXTRA_TASK = "net.ebisoba.taskapp2.TASK"
 
@@ -78,6 +81,7 @@ class MainActivity : AppCompatActivity() {
                 alarmManager.cancel(resultPendingIntent)
 
                 reloadListView()
+
             }
 
             builder.setNegativeButton("CANCEL", null)
@@ -89,10 +93,19 @@ class MainActivity : AppCompatActivity() {
         }
 
         reloadListView()
+
+        // ボタンをクリックしたとき
+        button_input.setOnClickListener {
+            if(category_input.text.toString().length != 0){
+                reloadListView_chosen()
+            }
+        }
     }
 
     private fun reloadListView() {
+
         // Realmデータベースから、「全てのデータを取得して新しい日時順に並べた結果」を取得
+//        val taskRealmResults = mRealm.where(Task::class.java).findAll().sort("date", Sort.DESCENDING)
         val taskRealmResults = mRealm.where(Task::class.java).findAll().sort("date", Sort.DESCENDING)
 
         // 上記の結果を、TaskList としてセットする
@@ -103,7 +116,31 @@ class MainActivity : AppCompatActivity() {
 
         // 表示を更新するために、アダプターにデータが変更されたことを知らせる
         mTaskAdapter.notifyDataSetChanged()
+
+
     }
+
+    private fun reloadListView_chosen() {
+
+        // Realmデータベースから、「全てのデータを取得して新しい日時順に並べた結果」を取得
+//        val taskRealmResults = mRealm.where(Task::class.java).findAll().sort("date", Sort.DESCENDING)
+        // category_input: 検索したいcategory
+        // category_edit_text:
+//        Log.d("test", category_input.text.toString())
+//        val taskRealmResults = mRealm.where(Task::class.java).contains("categories", category_input.toString()).findAll().sort("title", Sort.DESCENDING)
+        val taskRealmResults = mRealm.where(Task::class.java).contains("categories", category_input.text.toString()).findAll().sort("title", Sort.DESCENDING)
+        // 上記の結果を、TaskList としてセットする
+        mTaskAdapter.taskList = mRealm.copyFromRealm(taskRealmResults)
+
+        // TaskのListView用のアダプタに渡す
+        listView1.adapter = mTaskAdapter
+
+        // 表示を更新するために、アダプターにデータが変更されたことを知らせる
+        mTaskAdapter.notifyDataSetChanged()
+
+
+    }
+
 
     override fun onDestroy() {
         super.onDestroy()
